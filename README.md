@@ -82,7 +82,7 @@ L'évaluation de votre travail se fera en fonction des critères suivants:
 2. Le fonctionnement non erroné en cas de reception et traitement de messages non implémentés et de messages erronés (que ce soit du coté client ou du coté serveur);
 3. La libération de mémoire et la fermeture des sockets (utilisation de valgrind et lsof)
 
-## MALUS/BONUS
+### MALUS/BONUS
 
 L'évaluation du projet suivra la grille de notation suivante et prendra en compte des points bonus/malus.
 
