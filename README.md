@@ -62,10 +62,9 @@ Chaque soumission sera analysée par les detecteurs de plagiat que sont [JPLAG](
 
 En ce qui concerne les deadlines de rendu des jalons:
 
-- Jalon 1 : 13 octobre 23h59
-- Jalon 2 : 27 octobre 23h59
-- Jalon 3 : 10 novembre 23h59
-- Jalon 4 et rendu final : 15 novembre 23h59
+- Jalon 1+2 : 14 septembre 23h59
+- Jalon 3 : 25 septembre 23h59
+- Jalon 4 et rendu final : 30 novembre 23h59
 
 ### Soumission finale
 Pour la soumisson finale, copier votre code depuis le repertoire _travail/_ dans le repertoire _rendu_final/_ .
