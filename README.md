@@ -1,6 +1,6 @@
-# RE216 - Projet de programmation réseau ---
+# TE7-RESA1 - Projet de programmation réseau ---
 
-1. [RE216 - Projet de programmation réseau](#Projet-de-programmation-reseau)
+1. [TE7-RESA1 - Projet de programmation réseau](#Projet-de-programmation-reseau)
 * [Déroulement global](#déroulement-global)
 * [Contenu du depot git](#contenu-du-depot-git)
 * [Soumission des jalons](#soumission-des-jalons)
@@ -107,7 +107,7 @@ _Surprise_ : _Faites-vous et faites-nous rêver ! Ajoutez des fonctionnalités �
 # Jalons 
 
 ## Jalon 1 - Client-serveur TCP et serveur multi-clients 
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description 
 
@@ -148,7 +148,7 @@ Les exigences/requirements pour ce premier jalon sont définis comme suit :
 
 
 ## Jalon 2 - Les utilisateurs 
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
 
@@ -291,7 +291,7 @@ Connecting to server ... done!
 
 
 ## Jalon 3 - Les salons de discussion
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
 
@@ -349,7 +349,7 @@ Exemple de fonctionnement des salons :
 
 
 ## Jalon 4 - Les transferts de fichiers
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
 
@@ -398,7 +398,7 @@ Exemple de fonctionnement :
                             %terminal_user2> Receiving the file from 
                             user1...
                             %terminal_user2> file.txt saved in 
-                            .re216/inbox/file.txt
+                            .resa1/inbox/file.txt
 %terminal_user1> user2 has received the file.
 
 %terminal_user1> /send user2 "/home/user/correction_du_projet.txt"
@@ -412,7 +412,7 @@ Exemple de fonctionnement :
 
 
 # Tips and Tricks
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ## Debugger les segfault sans printf
 Si votre programme crash à cause d'un problème mémoire ou tout autre problème, vous pouvez identifier la ligne exacte en utilisant gdb.
@@ -478,7 +478,7 @@ Utile pour être sûr que vous ne laissez pas trainer vos sockets
 ```Valgrind path/to/program/serveur ```
 
 # Rappel de C
-[Top](#re216-\--projet-de-programmation-réseau)
+[Top](#resa1-\--projet-de-programmation-réseau)
 
 ## Structures
 Syntaxe pour déclarer les structures :
@@ -493,24 +493,24 @@ struct module {
 
 Syntaxe pour déclarer une variable de type structure
 
-``` struct module re216;```
+``` struct module resa1;```
 
 
 Syntaxe pour accéder aux champs d'une structure
 
 ```
-struct module re216;
-re216.moduleId = 5
-re216.moduleGrade = 12.5;
+struct module resa1;
+resa1.moduleId = 5
+resa1.moduleGrade = 12.5;
 ```
 
 Les structures peuvent être manipulées avec des pointeurs aussi
 
 ```
-struct module re216;
-struct module *pre216 = &re216;
-pre216->moduleId = 5;
-pre216->moduleGrade = 12.5;
+struct module resa1;
+struct module *presa1 = &resa1;
+presa1->moduleId = 5;
+presa1->moduleGrade = 12.5;
 ```
 
 On peut créer des alias pour simplifier le nommage des structures
@@ -518,9 +518,9 @@ On peut créer des alias pour simplifier le nommage des structures
 ```
 typedef struct module s_module ;
 
-s_module re216;
-re216.moduleId = 1;
-re216.moduleGrade = 12.5;
+s_module resa1;
+resa1.moduleId = 1;
+resa1.moduleGrade = 12.5;
 ```
 
 
@@ -547,10 +547,10 @@ if ((*pa) == 5){ // }
 Les pointeurs fonctionnent aussi avec les structures, mais avec l'opérateur ->
 
 ```
-struct module re216; 
-re216.moduleId = 5; 
-struct module *p_re216 = &re216;
-re216->moduleId = 5; //utilise -> et pas le .
+struct module resa1; 
+resa1.moduleId = 5; 
+struct module *p_resa1 = &resa1;
+resa1->moduleId = 5; //utilise -> et pas le .
 ```
 
 Passer un pointeur en paramètre d'une fonction
