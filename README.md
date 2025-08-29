@@ -29,7 +29,7 @@ Vous allez construire votre code petit à petit en suivant des jalons pré-défi
 * **chaque jalon doit être intégralement réalisé avant de passer au jalon suivant**. 
 * **Une fois le jalon atteint, il faut le soumettre au travers de la procédure qui vous est donnée.**
 
-La durée de réalisation ce projet ne devrait pas dépasser les 21h20 dont 10h40 pendant les séances encadrées.
+La durée de réalisation ce projet ne devrait pas dépasser les 21h20 dont 14h40 pendant les séances encadrées.
 
 
 ### Contenu du depot git
