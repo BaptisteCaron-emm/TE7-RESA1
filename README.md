@@ -62,7 +62,8 @@ Chaque soumission sera analysée par les detecteurs de plagiat que sont [JPLAG](
 
 En ce qui concerne les deadlines de rendu des jalons:
 
-- Jalon 1+2 : 14 septembre 23h59
+- Jalon 1 : 14 septembre 23h59
+- Jalon 3 : 19 septembre 23h59
 - Jalon 3 : 25 septembre 23h59
 - Jalon 4 et rendu final : 30 novembre 23h59
 
