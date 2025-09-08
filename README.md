@@ -9,7 +9,7 @@
 2. [Jalons](#jalons)
 * [Jalon 1 - Client-serveur TCP et serveur multi-clients](#jalon-1-\--client\-serveur-tcp-et-serveur-multi\-clients)
 * [Jalon 2 - Les utilisateurs](#jalon-2-\--Les-utilisateurs)
-* [Jalon 3 - Fonctiponnalités supplémentaires](#jalon-3-\--Les-salons-de-discussion)
+* [Jalon 3 - Fonctionnalités supplémentaires](#jalon-3-\--Les-salons-de-discussion)
 * [Jalon 4 - Les transferts de fichiers](#jalon-4-\--Les-transferts-de-fichiers)
 3. [Tips and Tricks](#tips-and-tricks)
 4. [Rappel de C](#rappel-de-c)
