@@ -292,7 +292,7 @@ Connecting to server ... done!
 **Req2.11** : Le serveur doit considerer sa fonction “echo” (i.e. renvoyer le message à l’utilisateur) si aucune commande n’est tapée avant le message (type ECHO_SEND).
 
 
-## Jalon 3 - Les salons de discussion
+## Jalon 3 - Des fonctionnalités supplémentaires
 [Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
