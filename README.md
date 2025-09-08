@@ -9,7 +9,7 @@
 2. [Jalons](#jalons)
 * [Jalon 1 - Client-serveur TCP et serveur multi-clients](#jalon-1-\--client\-serveur-tcp-et-serveur-multi\-clients)
 * [Jalon 2 - Les utilisateurs](#jalon-2-\--Les-utilisateurs)
-* [Jalon 3 - Fonctionnalités supplémentaires](#jalon-3-\--Les-salons-de-discussion)
+* [Jalon 3 - Fonctionnalités supplémentaires](#jalon-3-\--fonctionnalités-supplémentaires)
 * [Jalon 4 - Les transferts de fichiers](#jalon-4-\--Les-transferts-de-fichiers)
 3. [Tips and Tricks](#tips-and-tricks)
 4. [Rappel de C](#rappel-de-c)
@@ -292,26 +292,14 @@ Connecting to server ... done!
 **Req2.11** : Le serveur doit considerer sa fonction “echo” (i.e. renvoyer le message à l’utilisateur) si aucune commande n’est tapée avant le message (type ECHO_SEND).
 
 
-## Jalon 3 - Des fonctionnalités supplémentaires
+## Jalon 3 - Fonctionnalités supplémentaires
 [Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
-
-Ce jalon a pour objectif la réalisation des messages entre les utilisateurs afin que votre application devienne une application de messagerie instantanée à part entière. Jusqu'à présent, le serveur ne permettait que d’envoyer des messages privés et des messages en à tout le monde. Dorénavant, vos utilisateurs pourront interagir avec des salons de discussion.
-Dans ce contexte, un utilisateur peut créer un salon. Les utilisateurs ont alors la possibilité de rejoindre ce salon, et une fois inscrits les utilisateurs du salon peuvent s'échanger des messages entre eux. Les utilisateurs peuvent quitter le salon ou changer de salon quand ils le souhaitent.
-
-Dans ce jalon, il faut utiliser les types : MULTICAST_CREATE, MULTICAST_LIST, MULTICAST_JOIN, MULTICAST_SEND et MULTICAST_QUIT.
-
-Les champs **infos** doivent contenir les valeurs suivantes en fonction des cas : 
- - Pour **MULTICAST_CREATE**, le champ **infos** contient le nom du salon à créer.
-- Pour **MULTICAST_LIST**, le champ **infos** contient une chaîne de caractères vide.
-- Pour  **MULTICAST_JOIN**, le champ **infos** contient le nom du salon à rejoindre.
-- Pour **MULTICAST_SEND**, le champ **infos** contient le nom du salon dans lequel on veut envoyer le message.
-- Pour **MULTICAST_QUIT**, le champ **infos** contient le nom du salon à quitter.
+Pour ce jalon, vous etes réponsables de l'évolution du protocole de communciation/la structure de données de message, et la cration de nouvelles commandes appropriées.
 
 ### Exigences
 
-Pour ce jalon, vous etes réponsables de l'évolution du protocole de communciation/la structure de données de message, et la cration de nouvelles commandes appropriées.
 
 **Req3.1** : Chaque utlisateur doit dans un premier temps se logger avec login ET mot de passe. Le serveur doit enregistrer, lors de la premiere connexion, l'association login/mot de passe de chaque utilisateur. Le serveur doit verifier si les identifiants donné correspondent à un utilisateur existant ou non et répondre en consequence. 
 
