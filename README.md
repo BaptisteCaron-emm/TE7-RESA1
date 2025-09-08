@@ -311,43 +311,15 @@ Les champs **infos** doivent contenir les valeurs suivantes en fonction des cas 
 
 ### Exigences
 
-**Req3.1** : Un utilisateur doit pouvoir créer un salon (commande /create <channel_name>, type MULTICAST_CREATE). Les cas particuliers où un utilisateur déclare un salon avec des espaces ou des caractères spéciaux (i.e. autre que les lettres de l'alphabet et des chiffres) doivent être gérés.
+Pour ce jalon, vous etes réponsables de l'évolution du protocole de communciation/la structure de données de message, et la cration de nouvelles commandes appropriées.
 
-**Req3.2** : L'utilisateur doit rejoindre automatiquement le salon qu’il vient de créer, en quittant le salon dans lequel il se trouvait le cas échéant.
+**Req3.1** : Chaque utlisateur doit dans un premier temps se logger avec login ET mot de passe. Le serveur doit enregistrer, lors de la premiere connexion, l'association login/mot de passe de chaque utilisateur. Le serveur doit verifier si les identifiants donné correspondent à un utilisateur existant ou non et répondre en consequence. 
 
-**Req3.3** : L'utilisateur doit pouvoir demander la liste des salons (commande /channel_list, type MULTICAST_LIST).
+**Req3.2** : Une fois l'utilisateur connecté, le serveur doit envoyé l'historique de conversation de cet utilisateur. Pour cela, le serveur doit stocker l'intégralité des messages reçus et envoyés, dans un fichier différent pour chaque client. 
 
-**Req3.4** : Le serveur doit retourner un message d'erreur à l'utilisateur qui demande la création d'un salon déjà existant.
+**Req3.3** : Le serveur doit pouvoir également jouer le role de serveur de fichier. Les utilisateurs doivent pouvoir demander à déposer des fichiers de taille jusqu'a 1Go sur le serveur. Un utilisateur doit pouvoir lister les fichiers existants sur le serveur, et indiquer au serveur le fichier qu'il souhaite récupérer. 
 
-**Req3.5** : L'utilisateur doit pouvoir rejoindre et quitter un salon (commandes /join et /quit, type MULTICAST_JOIN et MULTICAST_QUIT).
-
-**Req3.6** : L'utilisateur inscrit à un salon doit pouvoir changer de salon, ce qui lui fait quitter le salon en cours.
-
-**Req3.7** : Le serveur doit détruire le salon lorsque son dernier occupant le quitte et doit notifier le dernier utilisateurs de la destruction du salon en même temps.
-
-**Req3.8** : L'utilisateur envoie des messages dans le salon dans lequel il se trouve en tapant directement une chaine de caractère. Un message envoyé dans un salon ne doit pas être transmis à d'autres utilisateurs que ceux présents dans le salon (multicast, type MULTICAST_SEND).
-
-**Req3.9** : Les utilisateurs qui composent un salon doivent être notifié de chaque départ/arrivé d'utilisateurs dans le salon dans lequel ils se trouvent. 
-
-Exemple de fonctionnement des salons : 
-
-```
-%terminal_user0> /create channel_name
-%terminal_user0> You have created channel channel_name
-%terminal_user0[channel_name]> You have joined channel_name
-                    %terminal_user1> /join channel_name
-                    %terminal_user1[channel_name]> INFO> You have joined channel_name
-%terminal_user0[channel_name]> INFO> user1 has joined channel_name
-%terminal_user0[channel_name]>  I'm downtown
-                    %terminal_user1[channel_name]> user0> : I'm downtown
-%terminal_user0[channel_name] > /quit channel_name
-					%terminal_user1[channel_name] INFO> user0 has quit channel_name
-                    %terminal_user1[channel_name] > /quit channel_name
-					%terminal_user0> INFO> You were the last user in this channel, channel_name has been destroyed
-
-```
-
-
+**Req3.4** : Le serveur doit créer un utilisateur spécial "admin" qui pourra bannir certains utilisateurs de la conversation avec un commande /ban username
 
 
 ## Jalon 4 - Les transferts de fichiers
