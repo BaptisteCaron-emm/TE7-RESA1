@@ -297,18 +297,83 @@ Connecting to server ... done!
 [Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
-Pour ce jalon, vous etes réponsables de l'évolution du protocole de communciation/la structure de données de message, et la cration de nouvelles commandes appropriées.
+Pour ce jalon, vous êtes responsables de l'évolution du protocole de communication, de la structure de données `message`, ainsi que de la création de nouvelles commandes appropriées.  
+Vous allez étendre le serveur afin de gérer :  
+- une **authentification par login/mot de passe**,  
+- un **historique des conversations par utilisateur**,  
+- un **stockage de fichiers côté serveur**,  
+- et un **utilisateur spécial "admin"** capable de gérer les autres.  
+
+### Indications techniques
+- Vous devez **modifier le fichier `msg_struct.h`** pour ajouter de nouveaux types de messages (par exemple `LOGIN`, `LOGIN_OK`, `LOGIN_FAIL`, `HISTORY_SEND`, `FILE_UPLOAD`, `FILE_LIST`, `FILE_DOWNLOAD`, `BAN_USER`, vous pouvez faire vos propres choix ici).  
+- Ajoutez de nouvelles commandes côté client (`/login`, `/sendfile`, `/getfile`, `/listfiles`, `/ban`).  
+- Respectez toujours la logique en deux étapes :  
+  1. Envoi de la structure `message`  
+  2. Envoi optionnel d’un **payload** de taille `pld_len`.  
+---
 
 ### Exigences
 
+**Req3.1 – Authentification des utilisateurs**  
+- Chaque utilisateur doit se connecter avec un **login** et un **mot de passe** à l’aide de la commande :  `/login` (si vous le souhaitez, vous pouvez faire évoluer ce que vous aviez implémenté avec la commande /nick)
+- Lors de la première connexion, si le login n’existe pas encore, le serveur l’enregistre avec son mot de passe
+- Lors des connexions suivantes, le serveur doit vérifier que le mot de passe correspond.  
+- En cas d’échec, le serveur envoie un message d’erreur (`LOGIN_FAIL`) et refuse les autres commandes tant que l’utilisateur n’est pas connecté.  
+- En cas de succès, le serveur envoie un `LOGIN_OK` et l’utilisateur peut interagir normalement.
 
-**Req3.1** : Chaque utlisateur doit dans un premier temps se logger avec login ET mot de passe. Le serveur doit enregistrer, lors de la premiere connexion, l'association login/mot de passe de chaque utilisateur. Le serveur doit verifier si les identifiants donné correspondent à un utilisateur existant ou non et répondre en consequence. 
+---
 
-**Req3.2** : Une fois l'utilisateur connecté, le serveur doit envoyé l'historique de conversation de cet utilisateur. Pour cela, le serveur doit stocker l'intégralité des messages reçus et envoyés, dans un fichier différent pour chaque client. 
+**Req3.2 – Historique des conversations par utilisateur**  
+- Pour chaque utilisateur, le serveur doit créer un fichier texte (par exemple : `.resa1/history/<username>.log`).  
+- Chaque message reçu ou envoyé par cet utilisateur doit être sauvegardé dans ce fichier, sous une forme simple, par exemple:  
 
-**Req3.3** : Le serveur doit pouvoir également jouer le role de serveur de fichier. Les utilisateurs doivent pouvoir demander à déposer des fichiers de taille jusqu'a 1Go sur le serveur. Un utilisateur doit pouvoir lister les fichiers existants sur le serveur, et indiquer au serveur le fichier qu'il souhaite récupérer. 
+```
+[User1] -> [all] : Hello all
+[User1] -> [User2] : hello User2
+[UserX] -> [User1] : hello you 
+```
 
-**Req3.4** : Le serveur doit créer un utilisateur spécial "admin" qui pourra bannir certains utilisateurs de la conversation avec un commande /ban username
+- Lorsqu’un utilisateur se connecte avec succès, le serveur lui envoie automatiquement son historique (type `HISTORY_SEND`).  
+- Le client doit alors l’afficher sur le terminal avant de commencer une nouvelle session.  
+
+---
+
+**Req3.3 – Gestion de fichiers côté serveur**  
+Le serveur doit pouvoir agir comme un **dépôt de fichiers** partagé :  
+- Un utilisateur peut envoyer un fichier au serveur avec :  `/sendfile <path/to/file>`
+→ Le serveur sauvegarde le fichier dans un répertoire dédié (ex: `.resa1/files/`).  
+
+- Un utilisateur peut demander la liste des fichiers disponibles :  `/listfiles`
+→ Le serveur renvoie la liste des fichiers (type `FILE_LIST`).  
+
+- Un utilisateur peut télécharger un fichier en indiquant son nom :  `/getfile filename`
+→ Le serveur envoie le fichier en utilisant un message `FILE_DOWNLOAD` + payload.
+
+- Les fichiers doivent pouvoir atteindre une taille de **1 Go maximum** (pensez à gérer la lecture/écriture par morceaux).  
+
+
+---
+
+**Req3.4 – Utilisateur "admin" et bannissement**  
+- Le serveur doit créer un utilisateur spécial `admin` avec un mot de passe fixe (par exemple défini en dur dans le code au début).  
+- L’admin peut exécuter la commande suivante : `/ban` 
+
+- Le serveur doit alors déconnecter l’utilisateur ciblé. 
+- Le client banni doit recevoir un message clair du type :  
+
+```[Server] : You have been banned by the administrator. ```
+
+
+---
+
+### Conseils d’implémentation
+- **Login/mot de passe** : stockez les couples d'informations dans la liste chainée des utilisateurs en mémoire. POur des points bonus, vous pouvez aussi les stocker dans un fichier `.resa1/users.db` sous forme texte `login:password` et ainsi permettre au serveur d'etre relancé en conservant la liste des utilisateurs connu.
+- **Historique** : utilisez `fopen()/fprintf(openfile_descriptor,"[User1]>[User2]: Hello you\n")/fclose()` pour loguer les messages côté serveur.  
+- **Fichiers** : transférez les données en paquets (`read()/write()` par blocs de 4K ou 8K).  
+- **Admin/ban** : Pour des points bonus, maintenez une liste chaînée d’utilisateurs actifs + une liste d’utilisateurs bannis.  
+
+
+
 
 
 ## Jalon 4 - Les transferts de fichiers
