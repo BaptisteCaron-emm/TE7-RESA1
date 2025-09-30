@@ -10,7 +10,8 @@
 * [Jalon 1 - Client-serveur TCP et serveur multi-clients](#jalon-1-\--client\-serveur-tcp-et-serveur-multi\-clients)
 * [Jalon 2 - Les utilisateurs](#jalon-2-\--Les-utilisateurs)
 * [Jalon 3 - Fonctionnalités supplémentaires](#jalon-3-\--fonctionnalités-supplémentaires)
-* [Jalon 4 - Les transferts de fichiers](#jalon-4-\--Les-transferts-de-fichiers)
+* [Jalon 4 - Les salons de discussion](#jalon-4-\--Les-salons-de-discussion)
+* [Jalon 5 - Les transferts de fichiers](#jalon-4-\--Les-transferts-de-fichiers)
 3. [Tips and Tricks](#tips-and-tricks)
 4. [Rappel de C](#rappel-de-c)
 
@@ -39,7 +40,6 @@ Lorsque vous récupérez ce dépot git, il comprend les fichiers/dossiers:
 * _travail/_ qui est le dossier dans lequel vous allez coder, **c'est celui ce qui sera évalué pour vos soumissions de jalons**
 * _rendu_final/_ qui est le dossier dans lequel vous allez mettre votre code en fin de projet
 * _info.txt_ **que vous devez remplir avec vos noms + prénom + login github**
-* le support du cours
 
 ### Pusher son code sur le dépot git de GitHub
 
@@ -376,7 +376,65 @@ Le serveur doit pouvoir agir comme un **dépôt de fichiers** partagé :
 
 
 
-## Jalon 4 - Les transferts de fichiers
+
+## Jalon 4 - Les salons de discussion
+[Top](#re216-\--projet-de-programmation-réseau)
+
+### Description
+
+Ce jalon a pour objectif la réalisation des messages entre les utilisateurs afin que votre application devienne une application de messagerie instantanée à part entière. Jusqu'à présent, le serveur ne permettait que d’envoyer des messages privés et des messages en à tout le monde. Dorénavant, vos utilisateurs pourront interagir avec des salons de discussion.
+Dans ce contexte, un utilisateur peut créer un salon. Les utilisateurs ont alors la possibilité de rejoindre ce salon, et une fois inscrits les utilisateurs du salon peuvent s'échanger des messages entre eux. Les utilisateurs peuvent quitter le salon ou changer de salon quand ils le souhaitent.
+
+Dans ce jalon, il faut utiliser les types : MULTICAST_CREATE, MULTICAST_LIST, MULTICAST_JOIN, MULTICAST_SEND et MULTICAST_QUIT.
+
+Les champs **infos** doivent contenir les valeurs suivantes en fonction des cas : 
+ - Pour **MULTICAST_CREATE**, le champ **infos** contient le nom du salon à créer.
+- Pour **MULTICAST_LIST**, le champ **infos** contient une chaîne de caractères vide.
+- Pour  **MULTICAST_JOIN**, le champ **infos** contient le nom du salon à rejoindre.
+- Pour **MULTICAST_SEND**, le champ **infos** contient le nom du salon dans lequel on veut envoyer le message.
+- Pour **MULTICAST_QUIT**, le champ **infos** contient le nom du salon à quitter.
+
+### Exigences
+
+**Req4.1** : Un utilisateur doit pouvoir créer un salon (commande /create <channel_name>, type MULTICAST_CREATE). Les cas particuliers où un utilisateur déclare un salon avec des espaces ou des caractères spéciaux (i.e. autre que les lettres de l'alphabet et des chiffres) doivent être gérés.
+
+**Req4.2** : L'utilisateur doit rejoindre automatiquement le salon qu’il vient de créer, en quittant le salon dans lequel il se trouvait le cas échéant.
+
+**Req4.3** : L'utilisateur doit pouvoir demander la liste des salons (commande /channel_list, type MULTICAST_LIST).
+
+**Req4.4** : Le serveur doit retourner un message d'erreur à l'utilisateur qui demande la création d'un salon déjà existant.
+
+**Req4.5** : L'utilisateur doit pouvoir rejoindre et quitter un salon (commandes /join et /quit, type MULTICAST_JOIN et MULTICAST_QUIT).
+
+**Req4.6** : L'utilisateur inscrit à un salon doit pouvoir changer de salon, ce qui lui fait quitter le salon en cours.
+
+**Req4.7** : Le serveur doit détruire le salon lorsque son dernier occupant le quitte et doit notifier le dernier utilisateurs de la destruction du salon en même temps.
+
+**Req4.8** : L'utilisateur envoie des messages dans le salon dans lequel il se trouve en tapant directement une chaine de caractère. Un message envoyé dans un salon ne doit pas être transmis à d'autres utilisateurs que ceux présents dans le salon (multicast, type MULTICAST_SEND).
+
+**Req4.9** : Les utilisateurs qui composent un salon doivent être notifié de chaque départ/arrivé d'utilisateurs dans le salon dans lequel ils se trouvent. 
+
+Exemple de fonctionnement des salons : 
+
+```
+%terminal_user0> /create channel_name
+%terminal_user0> You have created channel channel_name
+%terminal_user0[channel_name]> You have joined channel_name
+                    %terminal_user1> /join channel_name
+                    %terminal_user1[channel_name]> INFO> You have joined channel_name
+%terminal_user0[channel_name]> INFO> user1 has joined channel_name
+%terminal_user0[channel_name]>  I'm downtown
+                    %terminal_user1[channel_name]> user0> : I'm downtown
+%terminal_user0[channel_name] > /quit channel_name
+					%terminal_user1[channel_name] INFO> user0 has quit channel_name
+                    %terminal_user1[channel_name] > /quit channel_name
+					%terminal_user0> INFO> You were the last user in this channel, channel_name has been destroyed
+
+```
+
+
+
+## Jalon 5 - Les transferts de fichiers
 [Top](#resa1-\--projet-de-programmation-réseau)
 
 ### Description
@@ -403,15 +461,15 @@ Les champs **infos** doivent contenir les valeurs suivantes en fonction des cas 
 - Pour **FILE_ACK**, le champ **infos** contient le nom du fichier qui a été correctement reçu par le récepteur.
 
 ### Exigences
-**Req 4.1** : Un utilisateur (l'émetteur) doit pouvoir envoyer un fichier à un autre utilisateur (le récepteur).
+**Req 5.1** : Un utilisateur (l'émetteur) doit pouvoir envoyer un fichier à un autre utilisateur (le récepteur).
 
-**Req 4.2** : Lors du transfert d'un fichier, le récepteur doit donner son approbation.
+**Req 5.2** : Lors du transfert d'un fichier, le récepteur doit donner son approbation.
 
-**Req 4.3** : Si le récepteur accepte l’échange de fichier, l’émetteur soit pouvoir se connecter directement au récepteur le temps de lui envoyer le fichier.
+**Req 5.3** : Si le récepteur accepte l’échange de fichier, l’émetteur soit pouvoir se connecter directement au récepteur le temps de lui envoyer le fichier.
 
-**Req 4.4** : Si le récepteur refuse l’échange de fichier, l’émetteur doit en être informé.
+**Req 5.4** : Si le récepteur refuse l’échange de fichier, l’émetteur doit en être informé.
 
-**Req 4.5** : Lors du transfert d'un fichier, le récepteur et l'émetteur doivent avoir confirmation que l'envoi s'est déroulé correctement.
+**Req 5.5** : Lors du transfert d'un fichier, le récepteur et l'émetteur doivent avoir confirmation que l'envoi s'est déroulé correctement.
 
 Exemple de fonctionnement : 
 
