@@ -13,11 +13,9 @@ Lisez d'abord les règles communes ci-dessous, puis avancez dans l'ordre des jal
 | Jalon 1 | Client/serveur TCP IPv4, écho et multi-clients | [jalon1.md](jalon1.md) |
 | Jalon 2 | Utilisateurs, pseudos et messagerie | [jalon2.md](jalon2.md) |
 | Jalon 3 | Transfert de fichiers pair à pair | [jalon3.md](jalon3.md) |
-| Jalon 4, extension | Salons de discussion | [jalon4.md](jalon4.md) |
+| Jalon 4 | Salons de discussion | [jalon4.md](jalon4.md) |
 
 Les [ressources](ressources.md) regroupent les conseils de débogage et le rappel de C fourni avec le sujet. Le [contrat de protocole](protocole.md) définit le format des trames, les limites et les erreurs de communication à respecter.
-
-Le jalon 4 est une extension. Il ne doit être abordé qu'après validation des fonctionnalités obligatoires. Le jalon 3 nécessite que chaque client puisse à la fois maintenir sa connexion avec le serveur et écouter temporairement une connexion pair à pair.
 
 ## Dépôt de départ
 
@@ -39,17 +37,26 @@ Chaque jalon est soumis sur GitHub sous la forme d'une *release*, qui fige l'ét
 1. Placez le code attendu dans le bon répertoire : `travail/` pour les jalons intermédiaires, `rendu_final/` pour le rendu final.
 2. Créez une release nommée `jalonx`, où `x` est le numéro du jalon.
 3. Publiez la release. Une release laissée à l'état de brouillon est ignorée.
-4. N'ajoutez pas de fichiers joints à la release : ils ne sont pas pris en compte lors de l'évaluation.
+4. **N'ajoutez pas de fichiers joints à la release**. Ils ne seront pas pris en compte lors de l'évaluation.
 
-Consultez au besoin [la documentation GitHub sur la création de releases](https://docs.github.com/repositories/releasing-projects-on-github/managing-releases-in-a-repository). Les soumissions sont analysées par [JPlag](https://github.com/jplag/JPlag) et [MOSS](https://theory.stanford.edu/~aiken/moss/).
+Consultez au besoin [la documentation GitHub sur la création de releases](https://docs.github.com/repositories/releasing-projects-on-github/managing-releases-in-a-repository). 
 
-### Échéances indiquées dans le sujet
+
+### Échéances du projet et des jalons
+
+Chaque jalon devra être livré à la fin d'une séance en classe au moyen, d'une release. Vous devrez faire une démonstration de votre code aux encadrants lors de la dernière séance. La version finale du code à rendre devra être mise dans une release faite lors de la dernière séance. Toute production du code a posteriori ne sera pas prise en compte.
 
 | Livrable | Échéance |
 | --- | --- |
-| Jalon 1 | 14 septembre, 23 h 59 |
-| Jalon 2 | 19 septembre, 23 h 59 |
-| Jalons 3 et 4, et rendu final | 30 septembre, 23 h 59 |
+| Jalon 1 | Fin de la première séance |
+| Jalon 2 | Fin de la seconde séance |
+| Jalon 3 | Fin de la troisième séance |
+| Jalon 4 | Fin de la quatrième séance |
+| Rendu final et demonstration | lors de la 5ieme séance, au plus tard à la fin de la 5ieme séance |
+
+### IA et production logiciel dans ce projet 
+
+L'utilisation d'outils IA pour le développement et la production de code n'est pas interdite dans le cadre de ce projet. En revanche, les outils IA empêchent, dans le cadre de l'apprentissage via ce projet, de monter en compétence et en connaissance. Pour cette raison, il est plus que fortement recommandé de **s'interdire les outils IA** pour produire ou développer. La seule utilisation cohérente et tolérée pouvant avoir un impact positif est l'utilisation des IA pour clarifier le fonctionnement des fonctions que nous avons vu ensemble en cours (en aucun cas pour proposer du code que vous reprendriez par la suite). 
 
 
 ## Rendu final
