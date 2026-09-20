@@ -44,9 +44,22 @@ Chaque jalon devra être livré à la fin d'une séance en classe au moyen, d'un
 | --- | --- |
 | Jalon 1 | Au plus tard à la fin de la première séance |
 | Jalon 2 | Au plus tard à la fin de la seconde séance |
-| Jalon 3 | Au plus tard à la fin de la troisième séance | ** A ce niveau là, vous devriez avoir déjà commencé largement le jalon 4 **
+| Jalon 3 | Au plus tard à la fin de la troisième séance | 
 | Jalon 4 | Au plus tard à la fin de la quatrième séance |
 | Démonstration final | Pendant la quatrième séance |
+
+Ces échances indique **les dates au plus tard** auxquelles il vous faut soumettre votre travail sur moodle.
+
+En termes d'attente moyenne, voici les durée de travail attendue sur chaque jalon pour avancé correctement au niveau attendu : 
+
+| Jalon | Durée de travail | Date de fin de developpement souhaitée |
+| --- | --- |
+| Jalon 1 | 2h | Milieu de la première séance |
+| Jalon 2 | 4h | Milieu de la seconde séance |
+| Jalon 3 | 3h | Milieu de la troisième séance | 
+| Jalon 4 | 3h | lors de la 4ieme séance |
+| Démonstration final | Pendant la quatrième séance |
+
 
 ### IA et production logiciel dans ce projet 
 
