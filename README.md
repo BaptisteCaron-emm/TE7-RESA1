@@ -46,7 +46,7 @@ Chaque jalon devra être livré à la fin d'une séance en classe au moyen, d'un
 | Jalon 2 | Au plus tard à la fin de la seconde séance |
 | Jalon 3 | Au plus tard à la fin de la troisième séance | ** A ce niveau là, vous devriez avoir déjà commencé largement le jalon 4 **
 | Jalon 4 | Au plus tard à la fin de la quatrième séance |
-| Jalon 4 | Pendant la quatrième séance |
+| Démonstration final | Pendant la quatrième séance |
 
 ### IA et production logiciel dans ce projet 
 
