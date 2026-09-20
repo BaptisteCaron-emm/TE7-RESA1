@@ -50,7 +50,7 @@ Chaque jalon devra être livré à la fin d'une séance en classe au sur moodle 
 
 Ces échances indique **les dates au plus tard** auxquelles il vous faut soumettre votre travail sur moodle. En termes d'attente moyenne, voici les durée de travail attendue sur chaque jalon pour avancer correctement au niveau attendu : 
 
-| Jalon | Durée de travail | Date de fin de developpement souhaitée |
+| Tache | Durée de travail | Date de fin de developpement souhaitée |
 | --- | --- | --- | 
 | Jalon 1 | 2h | Milieu de la première séance |
 | Jalon 2 | 4h | Milieu de la seconde séance |
