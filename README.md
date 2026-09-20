@@ -1,4 +1,4 @@
-# TE7-RESA1 — Projet de programmation réseau
+# ETE7-RESA1 — Projet de programmation réseau
 
 Ce projet consiste à développer en binôme une application de messagerie instantanée client/serveur en C. Elle doit permettre des échanges entre deux utilisateurs, entre plusieurs utilisateurs et, selon les jalons, des échanges de fichiers. Le projet a pour objectif principal de mettre en pratique l'API sockets POSIX et les communications TCP/IP.
 
