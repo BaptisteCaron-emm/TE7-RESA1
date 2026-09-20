@@ -2,7 +2,7 @@
 
 Ce projet consiste à développer en binôme une application de messagerie instantanée client/serveur en C. Elle doit permettre des échanges entre deux utilisateurs, entre plusieurs utilisateurs et, selon les jalons, des échanges de fichiers. Le projet a pour objectif principal de mettre en pratique l'API sockets POSIX et les communications TCP/IP.
 
-Vous construirez l'application progressivement. **Un jalon doit être entièrement terminé et soumis avant de commencer le suivant.** Vous avez 14h40 en séances encadrées. L'intégralité du projet est réalisable sur ce créneau là. Vous ne devez PAS travailler à la maison sur ce projet, il est UNIQUEMENT à réaliser en séance.
+Vous construirez l'application progressivement. **Un jalon doit être entièrement terminé et soumis avant de commencer le suivant.** Vous avez 14h40 en séances encadrées. L'intégralité du projet est réalisable sur ce créneau là. Vous ne devez PAS travailler à la maison sur ce projet, il est à réaliser UNIQUEMENT en séance.
 
 ## Parcours du projet
 
@@ -21,7 +21,7 @@ Les [ressources](ressources.md) regroupent les conseils de débogage et le rappe
 
 Après avoir récupéré le dépôt, vous y trouverez :
 
-- `sample-jalon1/` et `sample-jalon2/` : squelettes de code et Makefiles pour les jalons 1 et 2 ;
+- `sample-jalon1/` et `sample-jalon2/` : squelettes de code et Makefiles de base pour les jalons 1 et 2 ;
 - `travail/` : répertoire de développement. C'est ce répertoire qui est évalué pour les soumissions intermédiaires ;
 - `rendu_final/` : répertoire destiné au rendu final ;
 - `info.txt` : à compléter avec les noms, prénoms et logins GitHub du binôme.
@@ -32,15 +32,9 @@ Pour pousser votre code, créez un *Personal Access Token* GitHub en suivant [le
 
 ## Soumettre un jalon
 
-Chaque jalon est soumis sur GitHub sous la forme d'une *release*, qui fige l'état du dépôt à un instant donné.
+Chaque jalon est soumis sur **Moodle** sous la forme d'une archive qui contiendra le code attendu dans le bon répertoire : `travail/` pour les jalons intermédiaires, `rendu_final/` pour le rendu final.
 
-1. Placez le code attendu dans le bon répertoire : `travail/` pour les jalons intermédiaires, `rendu_final/` pour le rendu final.
-2. Créez une release nommée `jalonx`, où `x` est le numéro du jalon.
-3. Publiez la release. Une release laissée à l'état de brouillon est ignorée.
-4. **N'ajoutez pas de fichiers joints à la release**. Ils ne seront pas pris en compte lors de l'évaluation.
-
-Consultez au besoin [la documentation GitHub sur la création de releases](https://docs.github.com/repositories/releasing-projects-on-github/managing-releases-in-a-repository). 
-
+**Ne soumettez qu les fichiers sources. N'ajoutez pas de fichiers autre dans votre archive sur moodle** (pas de fichier compilé, pas de fichier pdf, etc.). 
 
 ### Échéances du projet et des jalons
 
@@ -48,11 +42,11 @@ Chaque jalon devra être livré à la fin d'une séance en classe au moyen, d'un
 
 | Livrable | Échéance |
 | --- | --- |
-| Jalon 1 | Fin de la première séance |
-| Jalon 2 | Fin de la seconde séance |
-| Jalon 3 | Fin de la troisième séance |
-| Jalon 4 | Fin de la quatrième séance |
-| Rendu final et demonstration | lors de la 5ieme séance, au plus tard à la fin de la 5ieme séance |
+| Jalon 1 | Au plus tard à la fin de la première séance |
+| Jalon 2 | Au plus tard à la fin de la seconde séance |
+| Jalon 3 | Au plus tard à la fin de la troisième séance | ** A ce niveau là, vous devriez avoir déjà commencé largement le jalon 4 
+| Jalon 4 | Au plus tard à la fin de la quatrième séance |
+| Jalon 4 | Pendant la quatrième séance |
 
 ### IA et production logiciel dans ce projet 
 
