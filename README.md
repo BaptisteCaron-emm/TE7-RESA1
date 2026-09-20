@@ -38,7 +38,7 @@ Chaque jalon est soumis sur **Moodle** sous la forme d'une archive qui contiendr
 
 ### Échéances du projet et des jalons
 
-Chaque jalon devra être livré à la fin d'une séance en classe au moyen, d'une release. Vous devrez faire une démonstration de votre code aux encadrants lors de la dernière séance. La version finale du code à rendre devra être mise dans une release faite lors de la dernière séance. Toute production du code a posteriori ne sera pas prise en compte.
+Chaque jalon devra être livré à la fin d'une séance en classe au sur moodle Vous devrez faire une démonstration de votre code aux encadrants lors de la dernière séance. Toute production du code a posteriori ne sera pas prise en compte.
 
 | Livrable | Échéance |
 | --- | --- |
