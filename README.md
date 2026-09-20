@@ -58,7 +58,7 @@ En termes d'attente moyenne, voici les durée de travail attendue sur chaque jal
 | Jalon 2 | 4h | Milieu de la seconde séance |
 | Jalon 3 | 3h | Milieu de la troisième séance | 
 | Jalon 4 | 3h | lors de la 4ieme séance |
-| Démonstration final | Pendant la quatrième séance |
+| Démonstration final | 30 min | Pendant la quatrième séance |
 
 
 ### IA et production logiciel dans ce projet 
