@@ -12,25 +12,36 @@
 void echo_client(int sockfd) {
 	char buff[MSG_LEN];
 	int n;
+	int msg_size; // Variable pour stocker la taille du message
+
 	while (1) {
-		// Cleaning memory
 		memset(buff, 0, MSG_LEN);
-		// Getting message from client
 		printf("Message: ");
 		n = 0;
-		while ((buff[n++] = getchar()) != '\n') {} // trailing '\n' will be sent
-		// Sending message (ECHO)
-		if (send(sockfd, buff, strlen(buff), 0) <= 0) {
+		while ((buff[n++] = getchar()) != '\n' && n < MSG_LEN - 1) {} 
+		buff[n] = '\0'; 
+		msg_size = strlen(buff); 
+
+		if (send(sockfd, &msg_size, sizeof(int), 0) <= 0) {
 			break;
 		}
-		printf("Message sent!\n");
-		// Cleaning memory
+		
+		if (send(sockfd, buff, msg_size, 0) <= 0) {
+			break;
+		}
+		printf("Message sent (size: %d)!\n", msg_size);
+
 		memset(buff, 0, MSG_LEN);
-		// Receiving message
-		if (recv(sockfd, buff, MSG_LEN, 0) <= 0) {
+		
+		int recv_size = 0;
+		if (recv(sockfd, &recv_size, sizeof(int), 0) <= 0) {
 			break;
 		}
-		printf("Received: %s", buff);
+
+		if (recv(sockfd, buff, recv_size, 0) <= 0) {
+			break;
+		}
+		printf("Received (size: %d): %s", recv_size, buff);
 	}
 }
 
@@ -62,7 +73,7 @@ int handle_connect(const char* server_name, const char* server_port) {
 	return sfd;
 }
 
-int main(int argc, char* argv) 
+int main(int argc, char** argv) 
 {
 	if (argc !=3)
 	{
