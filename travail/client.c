@@ -12,7 +12,7 @@
 void echo_client(int sockfd) {
 	char buff[MSG_LEN];
 	int n;
-	int msg_size; // Variable pour stocker la taille du message
+	int msg_size; 
 
 	while (1) {
 		memset(buff, 0, MSG_LEN);

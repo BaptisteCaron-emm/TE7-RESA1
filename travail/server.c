@@ -19,8 +19,6 @@ void die(int ret, char* msg){
 
 int first_fds_available(struct pollfd * fds, int size){
     for (int i = 0 ; i < size ; i++){
-        // Note : j'ai corrigé le "!= -1" du code de cours en "== -1". 
-        // Pour trouver une place disponible, il faut chercher une case vide (-1).
         if (fds[i].fd == -1){ 
             return i;
         }
@@ -102,7 +100,7 @@ int main(int argc, char** argv) {
         fds[i].events = 0;
         fds[i].revents = 0;
     }
-    printf("Serveur en écoute sur le port %s...\n", argv[1])
+    printf("Serveur en écoute sur le port %s...\n", argv[1]);
     while(1){
         int nb_fds = poll(fds, SIZE_TAB, -1); 
 		printf("Nb active fd : %d\n", nb_fds);
