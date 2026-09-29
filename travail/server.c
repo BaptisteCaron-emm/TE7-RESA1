@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include "common.h"
 #include "client_list.h"
 
@@ -10,21 +11,22 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define MAX_MESSAGE_SIZE 4096
 #define MAX_CLIENTS 128
 
 int setup_listening_socket(int port) {
 	int listen_fd;
 	int result;
+	int opt = 1;
 	struct sockaddr_in server_address;
 
 	listen_fd = socket(AF_INET, SOCK_STREAM, 0);
 	die(listen_fd, "socket");
+	setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	printf("TCP listening socket created.\n");
 
 	memset(&server_address, 0, sizeof(server_address));
 	server_address.sin_family = AF_INET;
-	server_address.sin_addr.s_addr = htonl(INADDR_ANY); // To listen on all interfaces --- Equivalent to 0.0.0.0
+	server_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	server_address.sin_port = htons((unsigned short)port);
 	result = bind(listen_fd, (struct sockaddr *)&server_address, sizeof(server_address));
 	die(result, "bind");
@@ -39,8 +41,7 @@ int setup_listening_socket(int port) {
 void accept_and_insert_client(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS], struct client_info **clients) {
 	struct sockaddr_in client_address;
 	socklen_t client_address_length = sizeof(client_address);
-	int client_fd = accept(listen_fd, (struct sockaddr *)&client_address,
-		&client_address_length);
+	int client_fd = accept(listen_fd, (struct sockaddr *)&client_address, &client_address_length);
 	int slot;
 
 	die(client_fd, "accept");
@@ -65,35 +66,155 @@ void accept_and_insert_client(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS]
 	}
 }
 
-/* Return 1 when the client should be disconnected, 0 after a successful echo. */
-int handle_client_message(int client_fd) {
-	int message_size;
-	char message[MAX_MESSAGE_SIZE + 1];
+/* Fonction utilitaire pour envoyer une réponse formatée à un client donné */
+static int send_server_reply(int fd, enum msg_type type, const char *sender, const char *infos, const char *text) {
+	struct message reply;
 
-	// first read next message size
-	if (read_from_socket(client_fd, &message_size, sizeof(message_size)) == 0) {
+	memset(&reply, 0, sizeof(reply));
+	reply.type = type;
+	if (sender != NULL) {
+		strncpy(reply.nick_sender, sender, NICK_LEN - 1);
+	}
+	if (infos != NULL) {
+		strncpy(reply.infos, infos, INFOS_LEN - 1);
+	}
+	reply.pld_len = (text != NULL) ? (int)strlen(text) : 0;
+	return send_packet(fd, &reply, text);
+}
+
+/*
+ * Traite tous les types de messages du Jalon 2 (Req2.0 à Req2.11).
+ * Retourne 1 si le client doit être déconnecté, 0 sinon.
+ */
+int handle_client_message(int client_fd, struct client_info **clients) {
+	struct message msg;
+	char payload[MAX_MESSAGE_SIZE + 1];
+	char out_buf[MAX_MESSAGE_SIZE + 256];
+	struct client_info *sender = client_list_find_by_fd(*clients, client_fd);
+
+	if (sender == NULL) {
+		return 1;
+	}
+
+	if (recv_packet(client_fd, &msg, payload, MAX_MESSAGE_SIZE) == 0) {
 		fprintf(stderr, "Client %d : Socket close\n", client_fd);
 		return 1;
 	}
-	if (message_size <= 0 || message_size > MAX_MESSAGE_SIZE) {
-		fprintf(stderr, "Client %d : Error on message size (%d) \n", client_fd, message_size);
-		return 1;
-	}
-	// then read the message payload
-	if (read_from_socket(client_fd, message, message_size) == 0) {
-		fprintf(stderr, "Client %d : Socket close\n", client_fd);
-		return 1;
+
+	// Affichage unique sur le serveur avec le pseudo devant
+	if (msg.pld_len > 0) {
+		printf("[%s] : %s\n",
+			(sender->nickname[0] != '\0') ? sender->nickname : "anonymous",
+			payload);
 	}
 
-	message[message_size] = '\0';
-	if (strcmp(message, "/quit") == 0) {
-		printf("Client %d requested to quit.\n", client_fd);
-		return 1;
+	switch (msg.type) {
+	case NICKNAME_NEW: {
+		/* Req2.1, Req2.2, Req2.4 : Attribution ou modification de pseudo */
+		const char *requested_nick = msg.infos;
+		struct client_info *existing = client_list_find_by_nick(*clients, requested_nick);
+
+		if (!is_valid_nickname(requested_nick)) {
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : Invalid nickname '%s' (alphanumeric only, no spaces).\n", requested_nick);
+			send_server_reply(client_fd, NICKNAME_NEW, "Server", "", out_buf);
+		} else if (existing != NULL && existing->fd != client_fd) {
+			// Req2.2 : Pseudo déjà attribué
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : Error, nickname '%s' is already taken.\n", requested_nick);
+			send_server_reply(client_fd, NICKNAME_NEW, "Server", "", out_buf);
+		} else {
+			int was_unregistered = (sender->nickname[0] == '\0');
+			strncpy(sender->nickname, requested_nick, NICK_LEN - 1);
+			sender->nickname[NICK_LEN - 1] = '\0';
+
+			if (was_unregistered) {
+				snprintf(out_buf, sizeof(out_buf),
+					"[Server] : Welcome on the chat %s\n", sender->nickname);
+			} else {
+				snprintf(out_buf, sizeof(out_buf),
+					"[Server] : Your nickname is now %s\n", sender->nickname);
+			}
+			printf("[%s] connected on slot (fd=%d).\n", sender->nickname, client_fd);
+			send_server_reply(client_fd, NICKNAME_NEW, "Server", sender->nickname, out_buf);
+		}
+		break;
 	}
-	if (write_in_socket(client_fd, &message_size, sizeof(message_size)) == 0 ||
-		write_in_socket(client_fd, message, message_size) == 0) {
-		return 1;
+
+	case NICKNAME_LIST: {
+		/* Req2.5 : Liste des utilisateurs connectés (/who) */
+		size_t offset = (size_t)snprintf(out_buf, sizeof(out_buf), "[Server] : Online users are\n");
+		for (struct client_info *curr = *clients; curr != NULL; curr = curr->next) {
+			if (curr->nickname[0] != '\0' && offset < sizeof(out_buf) - NICK_LEN - 20) {
+				offset += (size_t)snprintf(out_buf + offset, sizeof(out_buf) - offset,
+					"           - %s\n", curr->nickname);
+			}
+		}
+		send_server_reply(client_fd, NICKNAME_LIST, "Server", "", out_buf);
+		break;
 	}
+
+	case NICKNAME_INFOS: {
+		/* Req2.6 : Informations sur un utilisateur (/whois <pseudo>) */
+		struct client_info *target = client_list_find_by_nick(*clients, msg.infos);
+		if (target == NULL) {
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : User %s does not exist.\n", msg.infos);
+		} else {
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : %s connected since %s with IP address %s and port number %u\n",
+				target->nickname,
+				target->connected_since,
+				inet_ntoa(target->address.sin_addr),
+				(unsigned int)ntohs(target->address.sin_port));
+		}
+		send_server_reply(client_fd, NICKNAME_INFOS, "Server", msg.infos, out_buf);
+		break;
+	}
+
+	case BROADCAST_SEND: {
+		/* Req2.7 & Req2.8 : Diffusion à tous les autres utilisateurs sauf l'émetteur */
+		snprintf(out_buf, sizeof(out_buf), "[%s] : %s\n", sender->nickname, payload);
+		for (struct client_info *curr = *clients; curr != NULL; curr = curr->next) {
+			if (curr->fd != client_fd && curr->nickname[0] != '\0') {
+				send_server_reply(curr->fd, BROADCAST_SEND, sender->nickname, "", out_buf);
+			}
+		}
+		break;
+	}
+
+	case UNICAST_SEND: {
+		/* Req2.9 & Req2.10 : Message privé à un utilisateur ou erreur s'il n'existe pas */
+		struct client_info *target = client_list_find_by_nick(*clients, msg.infos);
+		if (target == NULL) {
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : User %s does not exist\n", msg.infos);
+			send_server_reply(client_fd, UNICAST_SEND, "Server", msg.infos, out_buf);
+		} else {
+			snprintf(out_buf, sizeof(out_buf), "[%s] : %s\n", sender->nickname, payload);
+			send_server_reply(target->fd, UNICAST_SEND, sender->nickname, target->nickname, out_buf);
+		}
+		break;
+	}
+
+	case ECHO_SEND: {
+		/* Req1.7 (/quit) et Req2.11 (Écho par défaut) */
+		if (strcmp(payload, "/quit") == 0) {
+			printf("Client %d (%s) requested to quit.\n", client_fd, sender->nickname);
+			return 1;
+		}
+		snprintf(out_buf, sizeof(out_buf), "[%s] : %s\n", sender->nickname, payload);
+		if (send_server_reply(client_fd, ECHO_SEND, sender->nickname, "", out_buf) == 0) {
+			return 1;
+		}
+		break;
+	}
+
+	default:
+		fprintf(stderr, "Unhandled message type: %d\n", msg.type);
+		break;
+	}
+
 	return 0;
 }
 
@@ -101,7 +222,6 @@ void server_poll_loop(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS],
 		struct client_info **clients) {
 	int running = 1;
 
-	/* Slot 0 is the listener. The other slots contain client sockets. */
 	for (int i = 0; i < MAX_CLIENTS; i++) {
 		poll_fds[i].fd = -1;
 		poll_fds[i].events = 0;
@@ -110,7 +230,6 @@ void server_poll_loop(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS],
 	poll_fds[0].fd = listen_fd;
 	poll_fds[0].events = POLLIN;
 
-	// execute server logic
 	while (running) {
 		int ready = poll(poll_fds, MAX_CLIENTS, -1);
 		die(ready, "poll");
@@ -127,7 +246,7 @@ void server_poll_loop(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS],
 			}
 
 			if ((returned_events & POLLIN) != 0) {
-				close_connection = handle_client_message(poll_fds[slot].fd);
+				close_connection = handle_client_message(poll_fds[slot].fd, clients);
 			}
 			if ((returned_events & (POLLERR | POLLHUP | POLLNVAL)) != 0) {
 				close_connection = 1;
@@ -146,7 +265,6 @@ void server_poll_loop(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS],
 		}
 	}
 
-	// Cleaning up: close all client sockets and free the client list
 	for (int slot = 1; slot < MAX_CLIENTS; slot++) {
 		if (poll_fds[slot].fd >= 0) {
 			close(poll_fds[slot].fd);
