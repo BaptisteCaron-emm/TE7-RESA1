@@ -1,7 +1,5 @@
-#define _DEFAULT_SOURCE
 #include "common.h"
 #include "client_list.h"
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <poll.h>
@@ -66,7 +64,6 @@ void accept_and_insert_client(int listen_fd, struct pollfd poll_fds[MAX_CLIENTS]
 	}
 }
 
-/* Fonction utilitaire pour envoyer une réponse formatée à un client donné */
 static int send_server_reply(int fd, enum msg_type type, const char *sender, const char *infos, const char *text) {
 	struct message reply;
 
@@ -82,10 +79,6 @@ static int send_server_reply(int fd, enum msg_type type, const char *sender, con
 	return send_packet(fd, &reply, text);
 }
 
-/*
- * Traite tous les types de messages du Jalon 2 (Req2.0 à Req2.11).
- * Retourne 1 si le client doit être déconnecté, 0 sinon.
- */
 int handle_client_message(int client_fd, struct client_info **clients) {
 	struct message msg;
 	char payload[MAX_MESSAGE_SIZE + 1];
@@ -101,7 +94,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 		return 1;
 	}
 
-	// Affichage unique sur le serveur avec le pseudo devant
 	if (msg.pld_len > 0) {
 		printf("[%s] : %s\n",
 			(sender->nickname[0] != '\0') ? sender->nickname : "anonymous",
@@ -110,7 +102,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 
 	switch (msg.type) {
 	case NICKNAME_NEW: {
-		/* Req2.1, Req2.2, Req2.4 : Attribution ou modification de pseudo */
 		const char *requested_nick = msg.infos;
 		struct client_info *existing = client_list_find_by_nick(*clients, requested_nick);
 
@@ -119,7 +110,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 				"[Server] : Invalid nickname '%s' (alphanumeric only, no spaces).\n", requested_nick);
 			send_server_reply(client_fd, NICKNAME_NEW, "Server", "", out_buf);
 		} else if (existing != NULL && existing->fd != client_fd) {
-			// Req2.2 : Pseudo déjà attribué
 			snprintf(out_buf, sizeof(out_buf),
 				"[Server] : Error, nickname '%s' is already taken.\n", requested_nick);
 			send_server_reply(client_fd, NICKNAME_NEW, "Server", "", out_buf);
@@ -142,7 +132,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 	}
 
 	case NICKNAME_LIST: {
-		/* Req2.5 : Liste des utilisateurs connectés (/who) */
 		size_t offset = (size_t)snprintf(out_buf, sizeof(out_buf), "[Server] : Online users are\n");
 		for (struct client_info *curr = *clients; curr != NULL; curr = curr->next) {
 			if (curr->nickname[0] != '\0' && offset < sizeof(out_buf) - NICK_LEN - 20) {
@@ -155,7 +144,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 	}
 
 	case NICKNAME_INFOS: {
-		/* Req2.6 : Informations sur un utilisateur (/whois <pseudo>) */
 		struct client_info *target = client_list_find_by_nick(*clients, msg.infos);
 		if (target == NULL) {
 			snprintf(out_buf, sizeof(out_buf),
@@ -173,7 +161,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 	}
 
 	case BROADCAST_SEND: {
-		/* Req2.7 & Req2.8 : Diffusion à tous les autres utilisateurs sauf l'émetteur */
 		snprintf(out_buf, sizeof(out_buf), "[%s] : %s\n", sender->nickname, payload);
 		for (struct client_info *curr = *clients; curr != NULL; curr = curr->next) {
 			if (curr->fd != client_fd && curr->nickname[0] != '\0') {
@@ -184,7 +171,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 	}
 
 	case UNICAST_SEND: {
-		/* Req2.9 & Req2.10 : Message privé à un utilisateur ou erreur s'il n'existe pas */
 		struct client_info *target = client_list_find_by_nick(*clients, msg.infos);
 		if (target == NULL) {
 			snprintf(out_buf, sizeof(out_buf),
@@ -198,7 +184,6 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 	}
 
 	case ECHO_SEND: {
-		/* Req1.7 (/quit) et Req2.11 (Écho par défaut) */
 		if (strcmp(payload, "/quit") == 0) {
 			printf("Client %d (%s) requested to quit.\n", client_fd, sender->nickname);
 			return 1;

@@ -4,10 +4,6 @@
 #include "msg_struct.h"
 #include <netinet/in.h>
 
-/*
- * Req2.3 : Structure exposée au serveur pour accéder au descripteur,
- * à l'adresse IP/port, au pseudo et à la date de connexion de chaque client.
- */
 struct client_info {
 	int fd;
 	struct sockaddr_in address;

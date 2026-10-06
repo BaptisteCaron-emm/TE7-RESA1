@@ -14,9 +14,8 @@ int client_list_add(struct client_info **clients, int fd, const struct sockaddr_
 	}
 	client->fd = fd;
 	client->address = *address;
-	client->nickname[0] = '\0'; // Aucun pseudo attribué au moment du accept()
+	client->nickname[0] = '\0'; 
 
-	// Enregistrement de la date et heure de connexion pour /whois (Req2.6)
 	now = time(NULL);
 	tm_info = localtime(&now);
 	if (tm_info != NULL) {

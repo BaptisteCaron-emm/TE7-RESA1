@@ -1,6 +1,4 @@
 #include "common.h"
-
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,12 +41,8 @@ int write_in_socket(int fd, void *buf, size_t msg_size) {
 	return (int)total;
 }
 
-/*
- * Req2.0 : Envoie d'abord les octets de struct message, puis exactement
- * msg->pld_len octets de payload si msg->pld_len > 0.
- */
 int send_packet(int fd, struct message *msg, const char *payload) {
-	(void)msg_type_str; // Évite un avertissement du compilateur si non utilisé ici
+	(void)msg_type_str;
 	if (write_in_socket(fd, msg, sizeof(*msg)) == 0) {
 		return 0;
 	}
@@ -60,10 +54,6 @@ int send_packet(int fd, struct message *msg, const char *payload) {
 	return 1;
 }
 
-/*
- * Req2.0 : Reçoit d'abord struct message, puis lit exactement msg->pld_len octets
- * de payload si msg->pld_len > 0.
- */
 int recv_packet(int fd, struct message *msg, char *payload, size_t max_len) {
 	if (read_from_socket(fd, msg, sizeof(*msg)) == 0) {
 		return 0;
@@ -83,17 +73,14 @@ int recv_packet(int fd, struct message *msg, char *payload, size_t max_len) {
 	return 1;
 }
 
-/*
- * Req2.1 : Vérifie que le pseudo n'est ni vide, ni trop long (< NICK_LEN),
- * et ne contient que des lettres ou des chiffres (aucun espace ni caractère spécial).
- */
 int is_valid_nickname(const char *nick) {
 	size_t len = strlen(nick);
 	if (len == 0 || len >= NICK_LEN) {
 		return 0;
 	}
 	for (size_t i = 0; i < len; i++) {
-		if (!isalnum((unsigned char)nick[i])) {
+		char c = nick[i];
+		if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
 			return 0;
 		}
 	}
