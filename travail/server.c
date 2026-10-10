@@ -195,6 +195,18 @@ int handle_client_message(int client_fd, struct client_info **clients) {
 		break;
 	}
 
+	case FILE_REQUEST: {
+		struct client_info *target = client_list_find_by_nick(*clients, msg.infos);
+		if (target == NULL) {
+			snprintf(out_buf, sizeof(out_buf),
+				"[Server] : User %s does not exist\n", msg.infos);
+			send_server_reply(client_fd, UNICAST_SEND, "Server", msg.infos, out_buf);
+		} else {
+			send_server_reply(target->fd, FILE_REQUEST, sender->nickname, msg.infos, payload);
+		}
+		break;
+	}
+
 	default:
 		fprintf(stderr, "Unhandled message type: %d\n", msg.type);
 		break;

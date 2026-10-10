@@ -43,6 +43,11 @@ int read_server_message(int socket_fd, char current_nick[NICK_LEN]) {
 		return 0;
 	}
 
+	if (msg.type == FILE_REQUEST) {
+		printf("%s wants you to accept the transfer of the file named \"%s\". Do you accept? [Y/N]\n", msg.nick_sender, payload);
+		return 1;
+	}
+
 	if (msg.type == NICKNAME_NEW && msg.infos[0] != '\0') {
 		strncpy(current_nick, msg.infos, NICK_LEN - 1);
 		current_nick[NICK_LEN - 1] = '\0';
@@ -151,6 +156,62 @@ int get_and_send_user_message(int socket_fd, char current_nick[NICK_LEN]) {
 		msg.infos[target_len] = '\0';
 		msg.pld_len = (int)strlen(text);
 		return send_packet(socket_fd, &msg, text);
+	}
+
+	if (strncmp(input, "/send ", 6) == 0) {
+		const char *args = input + 6;
+		const char *space = strchr(args, ' ');
+		if (space == NULL || *(space + 1) == '\0') {
+			fprintf(stderr, "Usage: /send <pseudo> <filename>\n");
+			return 1;
+		}
+		size_t target_len = (size_t)(space - args);
+		if (target_len == 0 || target_len >= INFOS_LEN) {
+			fprintf(stderr, "[Client] : Invalid target nickname length.\n");
+			return 1;
+		}
+		const char *filename = space + 1;
+		char clean_filename[MAX_MESSAGE_SIZE];
+		strncpy(clean_filename, filename, MAX_MESSAGE_SIZE - 1);
+		clean_filename[MAX_MESSAGE_SIZE - 1] = '\0';
+		size_t flen = strlen(clean_filename);
+
+		if (strncmp(input, "/send ", 6) == 0) {
+		const char *args = input + 6;
+		const char *space = strchr(args, ' ');
+		if (space == NULL || *(space + 1) == '\0') {
+			fprintf(stderr, "Usage: /send <pseudo> <filename>\n");
+			return 1;
+		}
+		size_t target_len = (size_t)(space - args);
+		if (target_len == 0 || target_len >= INFOS_LEN) {
+			fprintf(stderr, "[Client] : Invalid target nickname length.\n");
+			return 1;
+		}
+		
+		char *filename = (char *)(space + 1);
+
+		if (filename[0] == '"') {
+			filename++;
+		}
+		
+		size_t flen = strlen(filename);
+		if (flen > 0 && filename[flen - 1] == '"') {
+			filename[flen - 1] = '\0';
+		}
+		
+		msg.type = FILE_REQUEST;
+		memcpy(msg.infos, args, target_len);
+		msg.infos[target_len] = '\0';
+		msg.pld_len = (int)strlen(filename);
+		return send_packet(socket_fd, &msg, filename);
+	}
+		
+		msg.type = FILE_REQUEST;
+		memcpy(msg.infos, args, target_len);
+		msg.infos[target_len] = '\0';
+		msg.pld_len = (int)strlen(clean_filename);
+		return send_packet(socket_fd, &msg, clean_filename);
 	}
 
 	msg.type = ECHO_SEND;
